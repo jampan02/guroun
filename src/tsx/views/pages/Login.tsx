@@ -98,6 +98,7 @@ const Login = (props: Props) => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const [load, setLoading] = useState<boolean>(false);
+  const [testLoad, setTestLoading] = useState<boolean>(false);
   const [image, setImage] = useState<any>("");
   const [imageSrc, setImageSrc] = useState<string | null>("");
   const [userName, setUserName] = useState<string>("");
@@ -122,6 +123,26 @@ const Login = (props: Props) => {
     };
     checkIsLogin();
   }, [dispatch, props.history]);
+  //テストログイン
+  const testLogin = async (e: any) => {
+    e.preventDefault();
+    const sampleEmail = "emailforsample";
+    const samplePassword = "passwordforsample";
+    setTestLoading(true);
+    await firebaseApp
+      .auth()
+      .signInWithEmailAndPassword(sampleEmail, samplePassword)
+      .then(() => {
+        setLoading(false);
+        console.log("success");
+        props.history.push("/home");
+      })
+      .catch((error) => {
+        setTestLoading(false);
+        console.log("failed");
+        alert(error.message);
+      });
+  };
   //ログイン
   const doLogin = async (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
     e.preventDefault();
@@ -331,6 +352,15 @@ const Login = (props: Props) => {
                 : load
                 ? "新規作成中..."
                 : "新規作成"}
+            </Button>
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              className={classes.submit}
+              onClick={(e) => testLogin(e)}
+            >
+              {isLogin && testLoad ? "テストログイン中..." : "テストログイン"}
             </Button>
             <Grid container>
               {isLogin && (
